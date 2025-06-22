@@ -7,18 +7,18 @@ import { Observable } from 'rxjs';
 })
 export class UserService {
 
-  private baseUrl = 'https://localhost:7213/api/User';
+  private baseUrl = 'http://localhost:3000/api';
   // private baseUrl = 'https://figmabackend-production.up.railway.app/api/User';
-  constructor(private http: HttpClient) 
-  { 
+  constructor(private http: HttpClient)
+  {
 
   }
 
   login(credentials: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, credentials);
+    return this.http.post(`${this.baseUrl}/auth/login`, credentials);
   }
 
   register(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/register`, data);
+    return this.http.post(`${this.baseUrl}/auth/register`, data);
   }
 }

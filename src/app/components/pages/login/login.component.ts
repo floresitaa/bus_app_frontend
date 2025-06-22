@@ -21,9 +21,12 @@ export class LoginComponent {
   registerData = {
     name: '',
     email: '',
-    password: ''
+    password: '',
+    ci: '',
+    fecha_nacimiento: '',
+
   };
-  
+
   constructor(private userService: UserService, private router: Router)
   {
 
@@ -31,12 +34,12 @@ export class LoginComponent {
 
   login() {
     console.log('Login enviado', this.email, this.password);
-    this.userService.login({ Email: this.email, Password: this.password })
+    this.userService.login({ correo: this.email, contraseña: this.password })
       .subscribe({
         next: (res: any) => {
           console.log('Login exitoso', res);
           sessionStorage.setItem("userId", res.data);
-          
+
           Swal.fire({
             position: "top-end",
             icon: "success",
@@ -74,9 +77,11 @@ export class LoginComponent {
     console.log('Usuario registrado', this.registerData);
 
     this.userService.register({
-      Email: this.registerData.email,
-      Password: this.registerData.password,
-      Username: this.registerData.name
+      correo: this.registerData.email,
+      contraseña: this.registerData.password,
+      nombre: this.registerData.name,
+      ci: this.registerData.ci,
+      fecha_nacimiento: this.registerData.fecha_nacimiento
     }).subscribe({
       next: (res: any) => {
         console.log(res);

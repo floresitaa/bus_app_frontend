@@ -40,6 +40,16 @@
             <input type="text" [(ngModel)]="registerData.name" name="name" required
               class="mt-1 block w-full px-4 py-2 border rounded-xl border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" />
           </div>
+           <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">CI.</label>
+            <input type="number" [(ngModel)]="registerData.ci" name="ci" required
+              class="mt-1 block w-full px-4 py-2 border rounded-xl border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700">Fecha Nacimiento</label>
+            <input type="date" [(ngModel)]="registerData.fecha_nacimiento" name="fecha_nacimiento" required
+              class="mt-1 block w-full px-4 py-2 border rounded-xl border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" />
+          </div>
           <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700">Correo</label>
             <input type="email" [(ngModel)]="registerData.email" name="email" required
