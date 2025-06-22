@@ -1,0 +1,43 @@
+/* styles.css o el archivo CSS correspondiente */
+.fixed {
+  position: fixed;
+}
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.bg-black {
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro con opacidad */
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.z-50 {
+  z-index: 50; /* Asegúrate de que esté por encima de otros elementos */
+}
+
+.bg-white {
+  background-color: white; /* Fondo blanco para el modal */
+}
+
+.rounded-2xl {
+  border-radius: 1rem; /* Bordes redondeados */
+}
+
+.shadow-lg {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra */
+}
