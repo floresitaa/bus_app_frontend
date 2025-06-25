@@ -6,15 +6,15 @@
     <h2 class="text-2xl font-bold text-blue-600 mb-8">🚍 Bus Admin</h2>
     <nav class="flex flex-col gap-3">
       <a routerLink="/dashboard" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">🏠 Dashboard</a>
-      <a routerLink="/dashboard/places" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">📍 Places</a>
-      <a routerLink="/dashboard/routes" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">🛣️ Routes</a>
-      <a routerLink="/dashboard/buses" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">🚌 Buses</a>
-      <a routerLink="/dashboard/trips" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">🗓️ Trips</a>
-      <a routerLink="/dashboard/distribution" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">🧩 Distribution</a>
-      <a routerLink="/dashboard/seats" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">💺 Seats</a>
+      <a *ngIf="isAdmin()" routerLink="/dashboard/places" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">📍 Places</a>
+      <a *ngIf="isAdmin()" routerLink="/dashboard/routes" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">🛣️ Routes</a>
+      <a *ngIf="isAdmin()" routerLink="/dashboard/buses" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">🚌 Buses</a>
+      <a  routerLink="/dashboard/trips" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">🗓️ Trips</a>
+      <a *ngIf="isAdmin()" routerLink="/dashboard/distribution" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">🧩 Distribution</a>
+      <a *ngIf="isAdmin()" routerLink="/dashboard/seats" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">💺 Seats</a>
       <a routerLink="/dashboard/tickets" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">🎟️ Tickets</a>
       <a routerLink="/dashboard/purchases" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">💼 Purchases</a>
-      <a routerLink="/dashboard/users" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">👤 Users</a>
+      <a *ngIf="isAdmin()" routerLink="/dashboard/users" class="text-gray-700 hover:bg-blue-100 hover:text-blue-700 px-3 py-2 rounded transition">👤 Users</a>
     </nav>
   </aside>
 

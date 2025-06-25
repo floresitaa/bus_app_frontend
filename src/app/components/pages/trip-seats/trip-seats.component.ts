@@ -5,6 +5,7 @@ import { SeatViaje, TripSeatService } from '../../../services/trip-seat.service'
 import { PurchaseService } from '../../../services/purchase.service';
 import { FormsModule } from '@angular/forms';
 import { DocumentValidatorService } from '../../../services/document-validator.service';
+
 @Component({
   selector: 'app-trip-seats',
   standalone: true,
@@ -75,7 +76,7 @@ export class TripSeatsComponent implements OnInit {
   getSeatClasses(asiento: any): string[] {
     const classes = [];
     const tipo = (asiento.tipo_asiento || '').toLowerCase();
-    const isSelected = this.selectedSeats.some(s => s.asiento_viaje_id === asiento.asiento_viaje_id);
+    const isSelected = this.isSeatSelected(asiento);
 
     if (tipo === 'cama') {
       classes.push('rounded-full');
@@ -98,10 +99,11 @@ export class TripSeatsComponent implements OnInit {
     return classes;
   }
 
-  toggleSeat(asientoId: string): void {
-    const asiento = this.findAsientoById(asientoId);
-    if (!asiento || asiento.ocupado) return;
+  isSeatSelected(asiento: SeatViaje): boolean {
+    return this.selectedSeats.some(s => s.asiento_viaje_id === asiento.asiento_viaje_id);
+  }
 
+  toggleSeat(asiento: SeatViaje): void {
     const index = this.selectedSeats.findIndex(s => s.asiento_viaje_id === asiento.asiento_viaje_id);
     if (index > -1) {
       this.selectedSeats.splice(index, 1);
@@ -125,93 +127,87 @@ export class TripSeatsComponent implements OnInit {
     }
   }
 
-  findAsientoById(id: string): any {
-    for (const level of this.levels) {
-      const found = level.asientos.find((a: any) => a.asiento_viaje_id === id);
-      if (found) return found;
-    }
-    return null;
-  }
-
-  openPurchaseModal(content: any) {
+  openPurchaseModal() {
     if (this.selectedSeats.length === 0) {
       alert('Por favor seleccione al menos un asiento');
       return;
     }
-
     this.showPurchaseModal = true;
   }
 
+  closeModal() {
+    this.showPurchaseModal = false;
+  }
+
   confirmPurchase() {
-  this.isLoading = true;
-  this.purchaseError = '';
+    this.isLoading = true;
+    this.purchaseError = '';
 
-  const formData = new FormData();
+    const formData = new FormData();
+    formData.append('viaje_id', this.viajeId);
 
-  formData.append('viaje_id', this.viajeId);
+    this.selectedSeats.forEach((s, i) => {
+      formData.append(`boletos[${i}][asiento_id]`, s.asiento_viaje_id);
+      formData.append(`boletos[${i}][pasajero_nombre]`, s.pasajero?.nombre || '');
+      formData.append(`boletos[${i}][pasajero_ci]`, s.pasajero?.ci || '');
+      formData.append(`boletos[${i}][pasajero_fecha_nacimiento]`, s.pasajero?.fechaNacimiento || '');
 
-  this.selectedSeats.forEach((s, i) => {
-    formData.append(`boletos[${i}][asiento_id]`, s.asiento_viaje_id);
-    formData.append(`boletos[${i}][pasajero_nombre]`, s.pasajero?.nombre || '');
-    formData.append(`boletos[${i}][pasajero_ci]`, s.pasajero?.ci || '');
-    formData.append(`boletos[${i}][pasajero_fecha_nacimiento]`, s.pasajero?.fechaNacimiento || '');
-
-    if (s.imagenesCI?.frontal) {
-      formData.append(`boletos[${i}][ci_frontal]`, s.imagenesCI.frontal);
-    }
-    if (s.imagenesCI?.reverso) {
-      formData.append(`boletos[${i}][ci_reverso]`, s.imagenesCI.reverso);
-    }
-  });
-
-  this.purchaseService.create(formData).subscribe({
-    next: (resp: any) => {
-      this.isLoading = false;
-      this.purchaseSuccess = true;
-      this.selectedSeats = [];
-      this.loadSeats();
-    },
-    error: (err: any) => {
-      this.isLoading = false;
-      this.purchaseError = err.error?.detalle || 'Error al procesar la compra';
-      console.error('Purchase error:', err);
-    }
-  });
-}
-
-
-onFileSelected(event: any, asiento: any, lado: 'frontal' | 'reverso') {
-  const file = event.target.files[0];
-  if (!asiento.imagenesCI) asiento.imagenesCI = {};
-  asiento.imagenesCI[lado] = file;
-
-  if (asiento.imagenesCI.frontal && asiento.imagenesCI.reverso) {
-  const formData = new FormData();
-  formData.append('ci_frontal', asiento.imagenesCI.frontal); 
-  formData.append('ci_reverso', asiento.imagenesCI.reverso);
-
-  this.docValidator.validarCarnets(formData).subscribe({
-    next: (resp) => {
-      if (resp.mayores?.length || resp.menores?.length) {
-        const datos = [...resp.mayores, ...resp.menores][0];
-        asiento.pasajero = {
-          nombre: datos.nombre || '',
-          ci: datos.ci || '',
-          fechaNacimiento: datos.fecha_nacimiento || ''
-        };
+      if (s.imagenesCI?.frontal) {
+        formData.append(`boletos[${i}][ci_frontal]`, s.imagenesCI.frontal);
       }
-    },
-    error: (err) => {
-      console.error('Error al validar documento:', err);
+      if (s.imagenesCI?.reverso) {
+        formData.append(`boletos[${i}][ci_reverso]`, s.imagenesCI.reverso);
+      }
+    });
+
+    this.purchaseService.create(formData).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.purchaseSuccess = true;
+        this.selectedSeats = [];
+        this.loadSeats();
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.purchaseError = err.error?.detalle || 'Error al procesar la compra';
+        console.error('Purchase error:', err);
+      }
+    });
+  }
+
+  onFileSelected(event: any, asiento: any, lado: 'frontal' | 'reverso') {
+    const file = event.target.files[0];
+    if (!asiento.imagenesCI) asiento.imagenesCI = {};
+    asiento.imagenesCI[lado] = file;
+
+    if (asiento.imagenesCI.frontal && asiento.imagenesCI.reverso) {
+      const formData = new FormData();
+      formData.append('ci_frontal', asiento.imagenesCI.frontal);
+      formData.append('ci_reverso', asiento.imagenesCI.reverso);
+
+      this.docValidator.validarCarnets(formData).subscribe({
+        next: (resp) => {
+          if (resp.mayores?.length || resp.menores?.length) {
+            const datos = [...resp.mayores, ...resp.menores][0];
+            asiento.pasajero = {
+              nombre: datos.nombre || '',
+              ci: datos.ci || '',
+              fechaNacimiento: datos.fecha_nacimiento || ''
+            };
+          }
+        },
+        error: (err) => {
+          console.error('Error al validar documento:', err);
+        }
+      });
     }
-  });
-}
-
-}
-
-
+  }
 
   getTotal(): number {
-    return this.selectedSeats.reduce((sum, asiento) => sum + asiento.precio, 0);
+    return this.selectedSeats.reduce((sum, asiento) => sum + parseFloat(asiento.precio.toString()), 0);
+  }
+
+  getTotalFormatted(): string {
+    return this.getTotal().toFixed(2);
   }
 }
