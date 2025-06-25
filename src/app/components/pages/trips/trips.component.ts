@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Bus, BusService } from '../../../services/bus.service';
 import { Route, RouteService } from '../../../services/route.service';
 import { Trip, TripService } from '../../../services/trip.service';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-trips',
@@ -19,6 +20,22 @@ export class TripsComponent implements OnInit{
   routes: Route[] = [];
   trips: Trip[] = [];
   error: string | null = null;
+  
+  private authService = inject(AuthService);
+  userInfo = computed(() => {
+    const token = this.authService.getToken();
+    if (!token) return null;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      console.log(payload);
+      return payload;
+    } catch (err) {
+      return null;
+    }
+  });
+  isAdmin = computed(() => this.userInfo()?.tipo_usuario === 'administrador');
+  isPasajero = computed(() => this.userInfo()?.tipo_usuario === 'pasajero');
 
   constructor(
     private fb: FormBuilder,

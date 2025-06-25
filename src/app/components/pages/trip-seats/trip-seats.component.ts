@@ -106,7 +106,7 @@ export class TripSeatsComponent implements OnInit {
     const classes = [];
   
     const tipo = (asiento.tipo_asiento || '').toLowerCase();
-    const isSelected = this.selectedSeats.includes(asiento.etiqueta);
+    const isSelected = this.isSeatSelected(asiento);
 
     if (tipo === 'cama') {
       classes.push('rounded-full');
@@ -133,15 +133,13 @@ export class TripSeatsComponent implements OnInit {
 
   
   
-  toggleSeat(asientoId: number): void {
-    const asiento = this.findAsientoById(asientoId);
-    if (!asiento || asiento.ocupado) return;
-  
-    const index = this.selectedSeats.indexOf(asiento.etiqueta);
+  toggleSeat(asiento: SeatViaje): void {
+    
+    const index = this.selectedSeats.findIndex(s => s.asiento_viaje_id === asiento.asiento_viaje_id);
     if (index > -1) {
       this.selectedSeats.splice(index, 1);
     } else {
-      this.selectedSeats.push(asiento.etiqueta);
+      this.selectedSeats.push(asiento);
     }
   }
   
@@ -152,14 +150,22 @@ export class TripSeatsComponent implements OnInit {
     }
     return null;
   }
+  isSeatSelected(asiento: SeatViaje): boolean {
+    return this.selectedSeats.some(s => s.asiento_viaje_id === asiento.asiento_viaje_id);
+  }
   
-  openPurchaseModal(content: any) {
+  openPurchaseModal() {
     if (this.selectedSeats.length === 0) {
       alert('Por favor seleccione al menos un asiento');
       return;
+
     }
+    this.showPurchaseModal = true;
   }
-  
+
+  closeModal(){
+    this.showPurchaseModal = false;
+  }
   confirmPurchase() {
 
     this.isLoading = true;
@@ -191,6 +197,11 @@ export class TripSeatsComponent implements OnInit {
   }
 
   getTotal(): number {
-    return this.selectedSeats.reduce((sum, asiento) => sum + asiento.precio, 0);
+    console.log(this.selectedSeats);
+    return this.selectedSeats.reduce((sum, asiento) => sum + parseFloat(asiento.precio.toString()), 0);
+  }
+
+  getTotalFormatted(): string {
+    return this.getTotal().toFixed(2);
   }
 }

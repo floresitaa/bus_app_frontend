@@ -1,7 +1,7 @@
 <div class="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
   <h2 class="text-3xl font-bold mb-6 text-blue-600 flex items-center gap-2">🚌 Manage Trips</h2>
 
-  <form [formGroup]="form" (ngSubmit)="submit()" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+  <form *ngIf="isAdmin()" [formGroup]="form" (ngSubmit)="submit()" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
     <div>
       <label class="block text-sm font-medium mb-1">Bus</label>
       <select formControlName="bus_id" class="w-full p-2 border rounded">
