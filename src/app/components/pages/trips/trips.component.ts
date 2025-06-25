@@ -3,8 +3,40 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Bus, BusService } from '../../../services/bus.service';
 import { Route, RouteService } from '../../../services/route.service';
-import { Trip, TripService } from '../../../services/trip.service';
+import { TripService } from '../../../services/trip.service';
 import { RouterModule } from '@angular/router';
+
+export interface AnalisisIA {
+  es_recomendable: boolean;
+  resumen_analisis: string;
+  puntos_positivos: string[];
+  puntos_negativos: string[];
+  advertencias_contexto: string[];
+}
+
+export interface AlternativaViaje {
+  id: string;
+  hora_salida: string;
+  hora_llegada: string;
+  bus: string;
+}
+
+export interface Trip {
+  id: string;
+  bus_id: string;
+  ruta_id: string;
+  hora_salida: string;
+  hora_llegada: string;
+  viaje_evaluado?: {
+    origen: string;
+    destino: string;
+    fecha_salida: string;
+    fecha_llegada: string;
+    precio: number;
+  };
+  analisis_ia?: AnalisisIA;
+  alternativas?: AlternativaViaje[];
+}
 
 @Component({
   selector: 'app-trips',
@@ -13,7 +45,7 @@ import { RouterModule } from '@angular/router';
   templateUrl: './trips.component.html',
   styleUrl: './trips.component.css'
 })
-export class TripsComponent implements OnInit{
+export class TripsComponent implements OnInit {
   form: FormGroup;
   buses: Bus[] = [];
   routes: Route[] = [];
@@ -38,43 +70,34 @@ export class TripsComponent implements OnInit{
     this.fetchData();
   }
 
-  fetchData() {
-    this.busService.getAll().subscribe({ next: data => this.buses = data });
-    this.routeService.getAll().subscribe(
-      { 
-        next:(resp: any) => {
-          console.log(resp);
-          this.routes = resp;
-        },
-        error: (error: any) => {
-          console.log(error);
-        }
+ fetchData() {
+  this.busService.getAll().subscribe({ next: data => this.buses = data });
+  this.routeService.getAll().subscribe({ next: resp => this.routes = resp });
 
-      }
-    );
-    this.tripService.getAll().subscribe(
-      { 
-        next: (resp: any) => {
-          console.log(resp);
-          this.trips = resp;
-        },
-        error: (error: any) => {
-          console.log(error);
-          
-        }
-
+  this.tripService.getAll().subscribe({
+    next: (viajes) => {
+      this.trips = viajes;
+      this.trips.forEach((trip, index) => {
+        this.tripService.analizarViaje(trip.id).subscribe({
+          next: (analisis) => {
+            this.trips[index] = { ...trip, ...analisis };
+          },
+          error: (err) => console.error(`Error analizando viaje ${trip.id}`, err)
+        });
       });
-  }
+    },
+    error: (error) => console.log(error)
+  });
+}
+
 
   submit() {
     if (this.form.invalid) return;
 
     this.tripService.create(this.form.value).subscribe({
       next: (resp: any) => {
-        console.log(resp);
         this.tripService.generarAsientos(resp.id).subscribe({
-          next: (resp: any) => {
-            console.log(resp);
+          next: () => {
             this.form.reset();
             this.fetchData();
           },
@@ -90,7 +113,6 @@ export class TripsComponent implements OnInit{
   }
 
   getRouteLabel(id: string): string {
-    console.log(this.routes);
     const route = this.routes.find(r => r.id === id);
     return route ? `${route.origen.nombre} ➡️ ${route.destino.nombre}` : 'Unknown';
   }

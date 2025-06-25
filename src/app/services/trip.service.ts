@@ -28,4 +28,11 @@ export class TripService {
   generarAsientos(viajeId: string) {
   return this.http.post(`http://localhost:3000/api/asiento-viaje/generar/${viajeId}`, {});
 }
+analizarViaje(viajeId: string) {
+  return this.http.post<any>('http://localhost:3000/api/analizar', {
+    viaje_id: viajeId
+  });
+}
+
+
 }

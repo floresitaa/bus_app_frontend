@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class PurchaseService {
-  private apiUrl = 'http://localhost:3000/api/compras/';
+  private apiUrl = 'http://localhost:3000/api/boletos';
 
   constructor(private http: HttpClient) { }
 
@@ -19,6 +19,6 @@ export class PurchaseService {
   }
 
   create(purchaseData: any) {
-    return this.http.post(`${this.apiUrl}/api/boletos/create`, purchaseData);
+    return this.http.post(`${this.apiUrl}/create`, purchaseData);
   }
 }

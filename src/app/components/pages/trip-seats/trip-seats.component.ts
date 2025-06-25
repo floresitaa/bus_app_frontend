@@ -14,13 +14,23 @@ import { FormsModule } from '@angular/forms';
 export class TripSeatsComponent implements OnInit {
   viajeId!: string;
   levels: any[] = [];
-  selectedSeats: any[] = [];
+  selectedSeats: {
+    asiento_viaje_id: string;
+    etiqueta: string;
+    precio: number;
+    tipo_asiento: string;
+    ocupado: boolean;
+    pasajero: {
+      nombre: string;
+      ci: string;
+      fechaNacimiento: string;
+    };
+  }[] = [];
+
   showPurchaseModal: boolean = false;
-  passengerData: any = {};
   isLoading: boolean = false;
   purchaseSuccess: boolean = false;
   purchaseError: string = '';
-  
 
   constructor(
     private route: ActivatedRoute,
@@ -33,32 +43,9 @@ export class TripSeatsComponent implements OnInit {
     this.loadSeats();
   }
 
-  // loadSeats() {
-  //   this.seatService.getAvailableSeats(this.viajeId).subscribe({
-  //     next: (data: SeatViaje[]) => {
-
-  //       console.log(data);
-  //       const levelsMap: { [nivel: number]: any } = {};
-  //       for (const asiento of data) {
-  //         if (!levelsMap[asiento.nivel]) {
-  //           levelsMap[asiento.nivel] = {
-  //             nivel: asiento.nivel,
-  //             descripcion: asiento.descripcion || '',
-  //             asientos: []
-  //           };
-  //         }
-  //         levelsMap[asiento.nivel].asientos.push(asiento);
-  //       }
-  //       this.levels = Object.values(levelsMap);
-  //     },
-  //     error: (err) => console.error('Error loading seats', err)
-  //   });
-  // }
-
   loadSeats() {
     this.seatService.getAvailableSeats(this.viajeId).subscribe({
       next: (data) => {
-        console.log(data);
         const levelsMap: { [nivel: string]: any } = {};
         for (const asiento of data) {
           const nivel = asiento.nivel;
@@ -80,38 +67,13 @@ export class TripSeatsComponent implements OnInit {
     });
   }
 
-
-  // toggleSeat(id: string) {
-  //   const idx = this.selectedSeats.indexOf(id);
-  //   if (idx > -1) this.selectedSeats.splice(idx, 1);
-  //   else this.selectedSeats.push(id);
-  // }
-
-  // getSeatClasses(seat: any): string[] {
-  //   const base = ['text-white', 'border', 'border-gray-300'];
-  
-  //   const isSelected = this.selectedSeats.includes(seat.asiento_viaje_id);
-  //   const typeClass = seat.tipo_asiento === 'cama' 
-  //     ? 'bg-purple-600' 
-  //     : 'bg-blue-500';
-  
-  //   return [
-  //     ...base,
-  //     typeClass,
-  //     isSelected ? 'ring-4 ring-green-400' : 'hover:ring-2 hover:ring-blue-300'
-  //   ];
-  // }
   getSeatClasses(asiento: any): string[] {
-    console.log(asiento);
     const classes = [];
-  
     const tipo = (asiento.tipo_asiento || '').toLowerCase();
-    const isSelected = this.selectedSeats.includes(asiento.etiqueta);
+    const isSelected = this.selectedSeats.some(s => s.asiento_viaje_id === asiento.asiento_viaje_id);
 
     if (tipo === 'cama') {
       classes.push('rounded-full');
-    } else if (tipo === 'semi_cama') {
-      classes.push('rounded');
     } else {
       classes.push('rounded');
     }
@@ -127,41 +89,51 @@ export class TripSeatsComponent implements OnInit {
     } else {
       classes.push('bg-gray-300', 'text-black');
     }
-  
+
     return classes;
   }
 
-  
-  
-  toggleSeat(asientoId: number): void {
+  toggleSeat(asientoId: string): void {
     const asiento = this.findAsientoById(asientoId);
     if (!asiento || asiento.ocupado) return;
-  
-    const index = this.selectedSeats.indexOf(asiento.etiqueta);
+
+    const index = this.selectedSeats.findIndex(s => s.asiento_viaje_id === asiento.asiento_viaje_id);
     if (index > -1) {
       this.selectedSeats.splice(index, 1);
     } else {
-      this.selectedSeats.push(asiento.etiqueta);
+      this.selectedSeats.push({
+        asiento_viaje_id: asiento.asiento_viaje_id,
+        etiqueta: asiento.etiqueta,
+        precio: asiento.precio,
+        tipo_asiento: asiento.tipo_asiento,
+        ocupado: asiento.ocupado,
+        pasajero: {
+          nombre: '',
+          ci: '',
+          fechaNacimiento: ''
+        }
+      });
     }
   }
-  
-  findAsientoById(id: number): any {
+
+  findAsientoById(id: string): any {
     for (const level of this.levels) {
       const found = level.asientos.find((a: any) => a.asiento_viaje_id === id);
       if (found) return found;
     }
     return null;
   }
-  
+
   openPurchaseModal(content: any) {
     if (this.selectedSeats.length === 0) {
       alert('Por favor seleccione al menos un asiento');
       return;
     }
-  }
-  
-  confirmPurchase() {
 
+    this.showPurchaseModal = true;
+  }
+
+  confirmPurchase() {
     this.isLoading = true;
     this.purchaseError = '';
 
@@ -169,18 +141,18 @@ export class TripSeatsComponent implements OnInit {
       viaje_id: this.viajeId,
       asientos: this.selectedSeats.map(asiento => ({
         asiento_viaje_id: asiento.asiento_viaje_id,
-        pasajero_nombre: this.passengerData.nombre,
-        pasajero_ci: this.passengerData.ci,
-        pasajero_fecha_nacimiento: this.passengerData.fechaNacimiento
+        pasajero_nombre: asiento.pasajero.nombre,
+        pasajero_ci: asiento.pasajero.ci,
+        pasajero_fecha_nacimiento: asiento.pasajero.fechaNacimiento
       }))
     };
 
     this.purchaseService.create(purchaseData).subscribe({
-      next: (resp: any) => {
+      next: () => {
         this.isLoading = false;
         this.purchaseSuccess = true;
         this.selectedSeats = [];
-        this.loadSeats(); // Recargar asientos para actualizar disponibilidad
+        this.loadSeats(); // Recargar asientos
       },
       error: (err: any) => {
         this.isLoading = false;
