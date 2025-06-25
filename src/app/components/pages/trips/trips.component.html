@@ -1,0 +1,60 @@
+<div class="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
+  <h2 class="text-3xl font-bold mb-6 text-blue-600 flex items-center gap-2">🚌 Manage Trips</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+    <div>
+      <label class="block text-sm font-medium mb-1">Bus</label>
+      <select formControlName="bus_id" class="w-full p-2 border rounded">
+        <option value="">Select a bus</option>
+        <option *ngFor="let b of buses" [value]="b.id">{{ b.placa }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Route</label>
+      <select formControlName="ruta_id" class="w-full p-2 border rounded">
+        <option value="">Select a route</option>
+        <option *ngFor="let r of routes" [value]="r.id">{{ r.origen.nombre }} ➡️ {{ r.destino.nombre }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Departure Time</label>
+      <input type="datetime-local" formControlName="hora_salida" class="w-full p-2 border rounded" />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Arrival Time</label>
+      <input type="datetime-local" formControlName="hora_llegada" class="w-full p-2 border rounded" />
+    </div>
+
+    <div class="md:col-span-2">
+      <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition w-full md:w-auto">
+        ➕ Add Trip
+      </button>
+    </div>
+  </form>
+
+  <h3 class="text-2xl font-semibold mb-4 text-gray-800">📋 List of Trips</h3>
+
+  <div *ngFor="let t of trips" class="bg-gray-50 p-4 rounded shadow-sm border hover:shadow-md">
+    <p><strong>🚌 Bus:</strong> {{ getBusPlate(t.bus_id) }}</p>
+    <p><strong>🗺️ Route:</strong> {{ getRouteLabel(t.ruta_id) }}</p>
+    <p><strong>⏰ Departure:</strong> {{ t.hora_salida | date:'short' }}</p>
+    <p><strong>🕓 Arrival:</strong> {{ t.hora_llegada | date:'short' }}</p>
+
+    <div class="mt-3">
+      <a [routerLink]="['/dashboard/trips', t.id, 'seats']"
+        class="inline-block bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition">
+        🎟️ Seleccionar Asientos
+      </a>
+    </div>
+  </div>
+
+
+  <ng-template #noData>
+    <p class="text-gray-500 italic">No trips registered yet.</p>
+  </ng-template>
+
+  <div *ngIf="error" class="text-red-600 mt-4">{{ error }}</div>
+</div>

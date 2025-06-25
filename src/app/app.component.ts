@@ -13,7 +13,9 @@ export class AppComponent {
   title = 'bus_app_frontend';
   constructor(public router: Router) {}
   
+  hideNavbarRoutes = ['/login', '/register'];
+
   isLoginRoute(): boolean {
-    return this.router.url === '/login';
+    return this.router.url === '/login' || this.router.url === '/register';
   }
 }

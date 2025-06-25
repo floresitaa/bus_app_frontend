@@ -1,0 +1,28 @@
+<!-- register.component.html -->
+<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
+  <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-4 text-center">Registro</h2>
+
+    <form [formGroup]="form" (ngSubmit)="register()">
+      <input type="text" placeholder="Nombre" formControlName="nombre" class="w-full p-2 border rounded mb-2" />
+      <input type="email" placeholder="Correo" formControlName="correo" class="w-full p-2 border rounded mb-2" />
+      <input type="password" placeholder="Contraseña" formControlName="contraseña" class="w-full p-2 border rounded mb-2" />
+      <input type="text" placeholder="CI" formControlName="ci" class="w-full p-2 border rounded mb-2" />
+      <input type="date" formControlName="fecha_nacimiento" class="w-full p-2 border rounded mb-2" />
+      <select formControlName="tipo_usuario" class="w-full p-2 border rounded mb-4">
+        <option value="cliente">Cliente</option>
+        <option value="admin">Admin</option>
+      </select>
+
+      <div *ngIf="error" class="text-red-600 mb-4 text-sm">{{ error }}</div>
+
+      <button type="submit" class="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">
+        Registrarse
+      </button>
+    </form>
+
+    <div class="mt-4 text-center text-sm">
+      ¿Ya tienes cuenta? <a routerLink="/login" class="text-blue-500 underline">Inicia sesión</a>
+    </div>
+  </div>
+</div>

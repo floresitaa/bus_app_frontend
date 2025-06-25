@@ -1,0 +1,24 @@
+// purchase.service.ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PurchaseService {
+  private apiUrl = 'http://localhost:3000/api/compras/';
+
+  constructor(private http: HttpClient) { }
+
+  createPurchase(purchaseData: any) {
+    return this.http.post(`${this.apiUrl}/purchases`, purchaseData);
+  }
+
+  getPurchaseDetails(purchaseId: string) {
+    return this.http.get(`${this.apiUrl}/purchases/${purchaseId}`);
+  }
+
+  create(purchaseData: any) {
+    return this.http.post(`${this.apiUrl}/api/boletos/create`, purchaseData);
+  }
+}

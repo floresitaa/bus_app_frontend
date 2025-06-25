@@ -1,1 +1,40 @@
-<p>navbar works!</p>
+<!-- <nav class="bg-white border-b shadow-sm px-4 py-2 flex justify-between items-center">
+  <div class="text-lg font-bold">
+    <a routerLink="/" class="hover:text-blue-500 transition">Bus-App</a>
+  </div>
+
+  <div class="space-x-4">
+    <a routerLink="/" class="hover:text-blue-600">Inicio</a>
+    <a *ngIf="auth.isLoggedIn$ | async" routerLink="/dashboard" class="hover:text-blue-600">Dashboard</a>
+    <a *ngIf="!(auth.isLoggedIn$ | async)" routerLink="/login" class="hover:text-blue-600">Login</a>
+    <a *ngIf="!(auth.isLoggedIn$ | async)" routerLink="/register" class="hover:text-blue-600">Registro</a>
+    <button
+      *ngIf="auth.isLoggedIn$ | async"
+      (click)="logout()"
+      class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+    >
+      Cerrar sesión
+    </button>
+  </div>
+</nav> -->
+
+<nav class="bg-white shadow-md border-b px-6 py-3 flex justify-between items-center">
+  <div class="flex items-center gap-2">
+    <span class="text-xl font-bold text-blue-600">🚌 Bus-App</span>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <a routerLink="/" class="text-gray-700 hover:text-blue-600 transition">Home</a>
+    <a *ngIf="auth.isLoggedIn$ | async" routerLink="/dashboard" class="text-gray-700 hover:text-blue-600 transition">Dashboard</a>
+    <a *ngIf="!(auth.isLoggedIn$ | async)" routerLink="/login" class="text-gray-700 hover:text-blue-600 transition">Login</a>
+    <a *ngIf="!(auth.isLoggedIn$ | async)" routerLink="/register" class="text-gray-700 hover:text-blue-600 transition">Register</a>
+
+    <button
+      *ngIf="auth.isLoggedIn$ | async"
+      (click)="logout()"
+      class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+    >
+      Logout
+    </button>
+  </div>
+</nav>

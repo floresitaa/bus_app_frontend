@@ -1,0 +1,27 @@
+<div class="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
+  <h2 class="text-3xl font-bold mb-6 text-blue-600 flex items-center gap-2">🪑 Seat Distributions</h2>
+
+  <button
+    (click)="createDemoDistribution()"
+    class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition mb-6"
+    [disabled]="loading"
+  >
+    ➕ Create Demo Distribution
+  </button>
+
+  <div *ngIf="success" class="text-green-600 mb-4 font-semibold">{{ success }}</div>
+  <div *ngIf="error" class="text-red-600 mb-4 font-semibold">{{ error }}</div>
+
+  <h3 class="text-2xl font-semibold mb-4">📋 List of Distributions</h3>
+
+  <div *ngIf="distributions.length > 0; else noData" class="grid gap-4">
+    <div *ngFor="let d of distributions" class="p-4 bg-gray-50 border rounded shadow-sm">
+      <h4 class="text-lg font-bold text-blue-700">{{ d.nombre }}</h4>
+      <p class="text-gray-600">Levels: {{ d.cantidad_niveles }}</p>
+    </div>
+  </div>
+
+  <ng-template #noData>
+    <p class="text-gray-500 italic">No distributions found.</p>
+  </ng-template>
+</div>
