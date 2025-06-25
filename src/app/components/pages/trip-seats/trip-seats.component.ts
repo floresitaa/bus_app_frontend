@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { SeatViaje, TripSeatService } from '../../../services/trip-seat.service';
 import { PurchaseService } from '../../../services/purchase.service';
 import { FormsModule } from '@angular/forms';
-
+import { DocumentValidatorService } from '../../../services/document-validator.service';
 @Component({
   selector: 'app-trip-seats',
   standalone: true,
@@ -25,6 +25,10 @@ export class TripSeatsComponent implements OnInit {
       ci: string;
       fechaNacimiento: string;
     };
+    imagenesCI: {
+      frontal: File | null;
+      reverso: File | null;
+    };
   }[] = [];
 
   showPurchaseModal: boolean = false;
@@ -35,7 +39,8 @@ export class TripSeatsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private seatService: TripSeatService,
-    private purchaseService: PurchaseService
+    private purchaseService: PurchaseService,
+    private docValidator: DocumentValidatorService
   ) {}
 
   ngOnInit() {
@@ -111,6 +116,10 @@ export class TripSeatsComponent implements OnInit {
           nombre: '',
           ci: '',
           fechaNacimiento: ''
+        },
+        imagenesCI: {
+          frontal: null,
+          reverso: null
         }
       });
     }
@@ -134,33 +143,73 @@ export class TripSeatsComponent implements OnInit {
   }
 
   confirmPurchase() {
-    this.isLoading = true;
-    this.purchaseError = '';
+  this.isLoading = true;
+  this.purchaseError = '';
 
-    const purchaseData = {
-      viaje_id: this.viajeId,
-      asientos: this.selectedSeats.map(asiento => ({
-        asiento_viaje_id: asiento.asiento_viaje_id,
-        pasajero_nombre: asiento.pasajero.nombre,
-        pasajero_ci: asiento.pasajero.ci,
-        pasajero_fecha_nacimiento: asiento.pasajero.fechaNacimiento
-      }))
-    };
+  const formData = new FormData();
 
-    this.purchaseService.create(purchaseData).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.purchaseSuccess = true;
-        this.selectedSeats = [];
-        this.loadSeats(); // Recargar asientos
-      },
-      error: (err: any) => {
-        this.isLoading = false;
-        this.purchaseError = err.error?.detalle || 'Error al procesar la compra';
-        console.error('Purchase error:', err);
+  formData.append('viaje_id', this.viajeId);
+
+  this.selectedSeats.forEach((s, i) => {
+    formData.append(`boletos[${i}][asiento_id]`, s.asiento_viaje_id);
+    formData.append(`boletos[${i}][pasajero_nombre]`, s.pasajero?.nombre || '');
+    formData.append(`boletos[${i}][pasajero_ci]`, s.pasajero?.ci || '');
+    formData.append(`boletos[${i}][pasajero_fecha_nacimiento]`, s.pasajero?.fechaNacimiento || '');
+
+    if (s.imagenesCI?.frontal) {
+      formData.append(`boletos[${i}][ci_frontal]`, s.imagenesCI.frontal);
+    }
+    if (s.imagenesCI?.reverso) {
+      formData.append(`boletos[${i}][ci_reverso]`, s.imagenesCI.reverso);
+    }
+  });
+
+  this.purchaseService.create(formData).subscribe({
+    next: (resp: any) => {
+      this.isLoading = false;
+      this.purchaseSuccess = true;
+      this.selectedSeats = [];
+      this.loadSeats();
+    },
+    error: (err: any) => {
+      this.isLoading = false;
+      this.purchaseError = err.error?.detalle || 'Error al procesar la compra';
+      console.error('Purchase error:', err);
+    }
+  });
+}
+
+
+onFileSelected(event: any, asiento: any, lado: 'frontal' | 'reverso') {
+  const file = event.target.files[0];
+  if (!asiento.imagenesCI) asiento.imagenesCI = {};
+  asiento.imagenesCI[lado] = file;
+
+  if (asiento.imagenesCI.frontal && asiento.imagenesCI.reverso) {
+  const formData = new FormData();
+  formData.append('ci_frontal', asiento.imagenesCI.frontal); 
+  formData.append('ci_reverso', asiento.imagenesCI.reverso);
+
+  this.docValidator.validarCarnets(formData).subscribe({
+    next: (resp) => {
+      if (resp.mayores?.length || resp.menores?.length) {
+        const datos = [...resp.mayores, ...resp.menores][0];
+        asiento.pasajero = {
+          nombre: datos.nombre || '',
+          ci: datos.ci || '',
+          fechaNacimiento: datos.fecha_nacimiento || ''
+        };
       }
-    });
-  }
+    },
+    error: (err) => {
+      console.error('Error al validar documento:', err);
+    }
+  });
+}
+
+}
+
+
 
   getTotal(): number {
     return this.selectedSeats.reduce((sum, asiento) => sum + asiento.precio, 0);

@@ -47,6 +47,13 @@
 
     <div *ngFor="let s of selectedSeats; let i = index" class="mb-4">
       <label class="block text-sm font-semibold">Datos para asiento {{ s.etiqueta }}</label>
+     <label>CI - Anverso</label>
+      <input type="file" (change)="onFileSelected($event, s, 'frontal')" accept="image/*" />
+
+      <label>CI - Reverso</label>
+      <input type="file" (change)="onFileSelected($event, s, 'reverso')" accept="image/*" />
+
+
       <input [(ngModel)]="s.pasajero.nombre" [name]="'nombre_' + i" placeholder="Nombre" class="border rounded px-2 py-1 mb-1 w-full" required>
       <input [(ngModel)]="s.pasajero.ci" [name]="'ci_' + i" placeholder="CI" class="border rounded px-2 py-1 mb-1 w-full" required>
       <input type="date" [(ngModel)]="s.pasajero.fechaNacimiento" [name]="'fechaNacimiento_' + i" class="border rounded px-2 py-1 w-full" required>
