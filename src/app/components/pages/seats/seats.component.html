@@ -1,0 +1,37 @@
+<div class="max-w-5xl mx-auto p-6 bg-white rounded-xl shadow-md mt-10">
+  <h2 class="text-3xl font-bold text-blue-600 mb-6 flex items-center gap-2">💺 Seat Layout Viewer</h2>
+
+  <div class="mb-4">
+    <label class="block font-medium mb-1">Select a distribution</label>
+    <select [(ngModel)]="selectedDistributionId" (change)="onSelectDistribution()" class="w-full p-2 border rounded">
+      <option [ngValue]="null">-- Select Distribution --</option>
+      <option *ngFor="let d of distributions" [ngValue]="d.id">{{ d.nombre }}</option>
+    </select>
+  </div>
+
+  <div *ngIf="levels.length > 0">
+    <div class="mb-4 flex gap-4 items-center">
+      <div class="flex items-center gap-1"><div class="w-4 h-4 bg-blue-600 rounded"></div><span class="text-sm">Disponible</span></div>
+      <div class="flex items-center gap-1"><div class="w-4 h-4 bg-red-500 rounded"></div><span class="text-sm">Ocupado</span></div>
+      <div class="flex items-center gap-1"><div class="w-4 h-4 bg-yellow-400 rounded"></div><span class="text-sm">Conductor / Especial</span></div>
+    </div>
+
+    <div *ngFor="let level of levels" class="mb-8">
+      <h3 class="text-xl font-semibold text-gray-700 mb-2">🧱 Level {{ level.nivel }} - {{ level.descripcion }}</h3>
+      <div class="relative bg-gray-100 border rounded p-4 overflow-x-auto min-h-[160px]">
+        <div
+          class="absolute transition-all duration-200 cursor-pointer"
+          *ngFor="let seat of level.asientos"
+          [style.left.%]="seat.x * 20"
+          [style.top.%]="seat.y * 20"
+          [ngClass]="getSeatClasses(seat)"
+          title="{{ seat.etiqueta }} ({{ seat.tipo || 'normal' }})"
+        >
+          {{ seat.etiqueta }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!selectedDistributionId && !loading" class="text-gray-500 italic mt-4">Select a distribution to see seat layout.</div>
+</div>
