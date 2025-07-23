@@ -1,0 +1,42 @@
+<div class="max-w-6xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
+
+  <h2 class="text-3xl font-bold mb-6 text-blue-600 flex items-center gap-2">
+    👤 User Management
+  </h2>
+
+  <div *ngIf="error" class="text-red-600 font-semibold mb-4">
+    {{ error }}
+  </div>
+
+  <div *ngIf="users.length > 0; else sinUsuarios">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Nombre</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Correo</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">CI</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Rol</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">Fecha Registro</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <tr *ngFor="let user of users" class="hover:bg-gray-50 transition">
+            <td class="px-4 py-2">{{ user.nombre }}</td>
+            <td class="px-4 py-2">{{ user.correo }}</td>
+            <td class="px-4 py-2">{{ user.ci }}</td>
+            <td class="px-4 py-2 capitalize">{{ user.tipo_usuario }}</td>
+            <td class="px-4 py-2">{{ user.fecha_registro | date:'short' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <ng-template #sinUsuarios>
+    <p class="text-gray-500 italic">No hay usuarios registrados.</p>
+  </ng-template>
+</div>
+
+
+

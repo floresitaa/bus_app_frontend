@@ -11,6 +11,8 @@ import { TripsComponent } from './components/pages/trips/trips.component';
 import { DashboardHomeComponent } from './components/pages/dashboard-home/dashboard-home.component';
 import { SeatsComponent } from './components/pages/seats/seats.component';
 import { TripSeatsComponent } from './components/pages/trip-seats/trip-seats.component';
+import { TicketsComponent } from './components/pages/tickets/tickets.component';
+import { UsersComponent } from './components/pages/users/users.component';
 
 //   { path: '', redirectTo: 'login', pathMatch: 'full' },
 //   { path: 'login', component: LoginComponent },
@@ -27,7 +29,7 @@ import { TripSeatsComponent } from './components/pages/trip-seats/trip-seats.com
 //       { path: 'trips', component: TripsComponent },
 //     ]
 //   },
-//   { path: '**', redirectTo: 'login' }          
+//   { path: '**', redirectTo: 'login' }
 // ];
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -38,7 +40,7 @@ export const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     children: [
-      { path: '', component: DashboardHomeComponent }, 
+      { path: '', component: DashboardHomeComponent },
       { path: 'places', component: PlacesComponent },
       { path: 'routes', component: RoutesComponent },
       { path: 'buses', component: BusesComponent },
@@ -46,6 +48,9 @@ export const routes: Routes = [
       { path: 'trips', component: TripsComponent },
       { path: 'seats', component: SeatsComponent },
       { path: 'trips/:viaje_id/seats', component: TripSeatsComponent },
+      { path: 'tickets', component: TicketsComponent },
+      { path: 'users', component: UsersComponent }
+
     ]
   },
 

@@ -1,3 +1,4 @@
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -8,9 +9,10 @@ import { Observable } from 'rxjs';
 export class UserService {
 
   private baseUrl = 'http://localhost:3000/api/auth';
+  private userAdminUrl = 'http://localhost:3000/api/usuarios';
   // private baseUrl = 'https://figmabackend-production.up.railway.app/api/User';
-  constructor(private http: HttpClient) 
-  { 
+  constructor(private http: HttpClient)
+  {
 
   }
 
@@ -20,5 +22,15 @@ export class UserService {
 
   register(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/register`, data);
+  }
+
+
+    // 👤 Funciones de administración de usuarios
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any[]>(this.userAdminUrl);
+  }
+
+  createUser(data: any): Observable<any> {
+    return this.http.post(`${this.userAdminUrl}/create`, data);
   }
 }
