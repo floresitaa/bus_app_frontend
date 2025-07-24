@@ -20,7 +20,7 @@ RUN ng build --configuration=$ENVIRONMENT
 FROM nginx:alpine
 
 # COPY --from=build /usr/src/app/dist/figma_frontend/browser /usr/share/nginx/html
- COPY --from=build /usr/src/app/dist/bus_app_frontend /usr/share/nginx/html
+ COPY --from=build /usr/src/app/dist/bus_app_frontend/browser /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
