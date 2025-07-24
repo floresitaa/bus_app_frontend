@@ -8,8 +8,8 @@ import { Observable } from 'rxjs';
 })
 export class UserService {
 
-  private baseUrl = 'http://localhost:3000/api/auth';
-  private userAdminUrl = 'http://localhost:3000/api/usuarios';
+  private baseUrl = 'proyecto-backendsw-2025-production.up.railway.app/api/auth';
+  private userAdminUrl = 'proyecto-backendsw-2025-production.up.railway.app/api/usuarios';
   // private baseUrl = 'http://localhost:3000/api/auth';
   // private baseUrl = 'https://figmabackend-production.up.railway.app/api/User';
   constructor(private http: HttpClient)

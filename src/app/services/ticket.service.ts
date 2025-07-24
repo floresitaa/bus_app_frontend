@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class TicketService {
-  private apiUrl = 'http://localhost:3000/api/boletos/detallado'; // Ajusta la URL si es necesario
+  private apiUrl = 'proyecto-backendsw-2025-production.up.railway.app/api/boletos/detallado'; // Ajusta la URL si es necesario
 
   constructor(private http: HttpClient) {}
 
