@@ -146,22 +146,24 @@ export class TripSeatsComponent implements OnInit {
     const formData = new FormData();
     formData.append('viaje_id', this.viajeId);
 
-    this.selectedSeats.forEach((s, i) => {
-      formData.append(`boletos[${i}][asiento_id]`, s.asiento_viaje_id);
-      formData.append(`boletos[${i}][pasajero_nombre]`, s.pasajero?.nombre || '');
-      formData.append(`boletos[${i}][pasajero_ci]`, s.pasajero?.ci || '');
-      formData.append(`boletos[${i}][pasajero_fecha_nacimiento]`, s.pasajero?.fechaNacimiento || '');
-
-      if (s.imagenesCI?.frontal) {
-        formData.append(`boletos[${i}][ci_frontal]`, s.imagenesCI.frontal);
-      }
-      if (s.imagenesCI?.reverso) {
-        formData.append(`boletos[${i}][ci_reverso]`, s.imagenesCI.reverso);
-      }
-    });
+    this.isLoading = true;
+    this.purchaseError = '';
     
-    console.log(formData);
-    this.purchaseService.create(formData).subscribe({
+    // Prepara el payload en formato JSON
+    const payload = {
+      viaje_id: this.viajeId,
+      asientos: this.selectedSeats.map(s => ({
+        asiento_viaje_id: s.asiento_viaje_id,
+        pasajero_nombre: s.pasajero?.nombre || '',
+        pasajero_ci: s.pasajero?.ci || '',
+        pasajero_fecha_nacimiento: s.pasajero?.fechaNacimiento || '',
+        // Para las imágenes, necesitarías un enfoque diferente (ver más abajo)
+        ci_frontal: s.imagenesCI?.frontal || null,
+        ci_reverso: s.imagenesCI?.reverso || null
+      }))
+    };
+
+    this.purchaseService.create(payload).subscribe({
       next: () => {
         this.isLoading = false;
         this.purchaseSuccess = true;
