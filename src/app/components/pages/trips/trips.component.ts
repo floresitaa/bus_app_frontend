@@ -113,6 +113,7 @@ export class TripsComponent implements OnInit {
 
     this.tripService.create(this.form.value).subscribe({
       next: (resp: any) => {
+        console.log(resp);
         this.tripService.generarAsientos(resp.id).subscribe({
           next: () => {
             this.form.reset();

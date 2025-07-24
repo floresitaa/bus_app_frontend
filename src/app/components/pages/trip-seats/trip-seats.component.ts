@@ -159,7 +159,8 @@ export class TripSeatsComponent implements OnInit {
         formData.append(`boletos[${i}][ci_reverso]`, s.imagenesCI.reverso);
       }
     });
-
+    
+    console.log(formData);
     this.purchaseService.create(formData).subscribe({
       next: () => {
         this.isLoading = false;
