@@ -15,7 +15,7 @@ export interface Route {
 
 @Injectable({ providedIn: 'root' })
 export class RouteService {
-  private api = 'http://localhost:3000/api/rutas';
+  private api = 'https://proyecto-backendsw-2025-production.up.railway.app/api/rutas';
 
   constructor(private http: HttpClient) {}
 

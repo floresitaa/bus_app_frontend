@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class PurchaseService {
-  private apiUrl = 'http://localhost:3000/api/boletos';
+  private apiUrl = 'https://proyecto-backendsw-2025-production.up.railway.app/api/boletos';
 
   constructor(private http: HttpClient) { }
 

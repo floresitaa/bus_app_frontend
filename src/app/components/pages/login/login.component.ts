@@ -28,7 +28,11 @@ export class LoginComponent {
     if (this.form.invalid) return;
 
     this.auth.login(this.form.value).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
+      next: (resp: any) => 
+      {
+        console.log(resp);
+        this.router.navigate(['/dashboard'])
+      },
       error: (err) => this.error = err.error?.error || 'Error de autenticación'
     });
   }

@@ -5,7 +5,8 @@ import { BehaviorSubject, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/auth';
+  // private apiUrl = 'http://localhost:3000/api/auth';
+  private apiUrl = 'https://proyecto-backendsw-2025-production.up.railway.app/api/auth';
   private tokenKey = 'auth-token';
 
   isLoggedIn$ = new BehaviorSubject<boolean>(this.hasToken());
@@ -15,7 +16,11 @@ export class AuthService {
   login(data: { correo: string; contraseña: string }) {
     return this.http.post<{ token: string }>(`${this.apiUrl}/login`, data).pipe(
       tap((res) => {
-        localStorage.setItem(this.tokenKey, res.token);
+        const decoded = this.decodeToken(res.token);
+        console.log(decoded);
+        const tipoUsuario = decoded?.tipo_usuario;
+        console.log('Rol:', tipoUsuario);
+        sessionStorage.setItem(this.tokenKey, res.token);
         this.isLoggedIn$.next(true);
       })
     );
@@ -26,16 +31,28 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem(this.tokenKey);
+    sessionStorage.clear();
+    sessionStorage.removeItem(this.tokenKey);
     this.isLoggedIn$.next(false);
     this.router.navigate(['/login']);
   }
 
   getToken() {
-    return localStorage.getItem(this.tokenKey);
+    return sessionStorage.getItem(this.tokenKey);
   }
 
   private hasToken(): boolean {
-    return !!localStorage.getItem(this.tokenKey);
+    return !!sessionStorage.getItem(this.tokenKey);
   }
+
+  private decodeToken(token: string): any {
+    try {
+      const payload = token.split('.')[1];
+      const decoded = atob(payload);
+      return JSON.parse(decoded);
+    } catch (e) {
+      return null;
+    }
+  }
+
 }

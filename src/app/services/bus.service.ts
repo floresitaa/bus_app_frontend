@@ -13,7 +13,7 @@ export interface Bus {
 
 @Injectable({ providedIn: 'root' })
 export class BusService {
-  private baseUrl = 'http://localhost:3000/api/buses';
+  private baseUrl = 'https://proyecto-backendsw-2025-production.up.railway.app/api/buses';
 
   constructor(private http: HttpClient) {}
 

@@ -11,7 +11,7 @@ export interface Distribution {
 
 @Injectable({ providedIn: 'root' })
 export class DistributionService {
-  private baseUrl = 'http://localhost:3000/api/distribucion';
+  private baseUrl = 'https://proyecto-backendsw-2025-production.up.railway.app/api/distribucion';
 
   constructor(private http: HttpClient) {}
 

@@ -1,4 +1,3 @@
-<!-- trip-seats.component.html -->
 <div class="max-w-6xl mx-auto p-6 bg-white shadow rounded mt-10">
   <h2 class="text-2xl font-bold text-blue-700 mb-6">🚌 Selección de asientos para el viaje</h2>
 
@@ -17,7 +16,7 @@
             *ngFor="let asiento of level.asientos"
             class="w-10 h-10 flex items-center justify-center text-xs font-semibold cursor-pointer transition-all duration-200 transform hover:scale-110 active:scale-95"
             [ngClass]="getSeatClasses(asiento)"
-            (click)="toggleSeat(asiento.asiento_viaje_id)"
+            (click)="toggleSeat(asiento)"
             [title]="'Asiento: ' + asiento.etiqueta + ' | ' + asiento.tipo_asiento + ' | Bs. ' + asiento.precio"
             [attr.aria-label]="asiento.etiqueta"
             tabindex="0"
@@ -40,24 +39,25 @@
     <h4 class="font-semibold mb-2">🎟️ Asientos seleccionados:</h4>
     <div *ngIf="selectedSeats.length === 0" class="text-gray-500 italic">Ninguno</div>
     <ul class="list-disc ml-6 mb-4">
-      <li *ngFor="let s of selectedSeats">{{ s.etiqueta }}</li>
+      <li *ngFor="let seat of selectedSeats">
+        {{ seat.etiqueta }} - {{ seat.tipo_asiento }} - Bs. {{ seat.precio }}
+      </li>
     </ul>
-
-    <div class="text-lg font-bold mb-4">Total: Bs. {{ getTotal() }}</div>
 
     <div *ngFor="let s of selectedSeats; let i = index" class="mb-4">
       <label class="block text-sm font-semibold">Datos para asiento {{ s.etiqueta }}</label>
-     <label>CI - Anverso</label>
+      <label>CI - Anverso</label>
       <input type="file" (change)="onFileSelected($event, s, 'frontal')" accept="image/*" />
 
       <label>CI - Reverso</label>
       <input type="file" (change)="onFileSelected($event, s, 'reverso')" accept="image/*" />
 
-
       <input [(ngModel)]="s.pasajero.nombre" [name]="'nombre_' + i" placeholder="Nombre" class="border rounded px-2 py-1 mb-1 w-full" required>
       <input [(ngModel)]="s.pasajero.ci" [name]="'ci_' + i" placeholder="CI" class="border rounded px-2 py-1 mb-1 w-full" required>
       <input type="date" [(ngModel)]="s.pasajero.fechaNacimiento" [name]="'fechaNacimiento_' + i" class="border rounded px-2 py-1 w-full" required>
     </div>
+
+    <div class="text-lg font-bold mb-4">Total: Bs. {{ getTotal() }}</div>
 
     <button
       (click)="confirmPurchase()"

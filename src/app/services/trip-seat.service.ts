@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 export interface SeatViaje {
+  ocupado: boolean;
   asiento_viaje_id: string;
   etiqueta: string;
   tipo_asiento: string;
@@ -19,7 +20,7 @@ export interface SeatViaje {
   providedIn: 'root'
 })
 export class TripSeatService {
-  private baseUrl = 'http://localhost:3000/api/asiento-viaje';
+  private baseUrl = 'https://proyecto-backendsw-2025-production.up.railway.app/api/asiento-viaje';
 
   constructor(private http: HttpClient) {}
 

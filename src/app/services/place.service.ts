@@ -13,7 +13,7 @@ export interface Place {
   providedIn: 'root'
 })
 export class PlaceService {
-  private apiUrl = 'http://localhost:3000/api/lugares';
+  private apiUrl = 'https://proyecto-backendsw-2025-production.up.railway.app/api/lugares';
 
   constructor(private http: HttpClient) {}
 
