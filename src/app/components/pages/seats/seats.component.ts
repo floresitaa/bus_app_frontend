@@ -22,7 +22,7 @@ export class SeatsComponent implements OnInit {
   }
 
   loadDistributions() {
-    this.http.get<any[]>('http://localhost:3000/api/distribucion').subscribe({
+    this.http.get<any[]>('https://proyecto-backendsw-2025-production.up.railway.app/api/distribucion').subscribe({
       next: (data) => (this.distributions = data)
     });
   }
@@ -31,11 +31,11 @@ export class SeatsComponent implements OnInit {
     if (!this.selectedDistributionId) return;
 
     this.loading = true;
-    this.http.get<any[]>(`http://localhost:3000/api/distribucion/${this.selectedDistributionId}/niveles`).subscribe({
+    this.http.get<any[]>(`https://proyecto-backendsw-2025-production.up.railway.app/api/distribucion/${this.selectedDistributionId}/niveles`).subscribe({
       next: async (niveles) => {
         const nivelesConAsientos = await Promise.all(
           niveles.map(async (nivel) => {
-            const asientos = await this.http.get<any[]>(`http://localhost:3000/api/niveles/${nivel.id}/asientos`).toPromise();
+            const asientos = await this.http.get<any[]>(`https://proyecto-backendsw-2025-production.up.railway.app/api/niveles/${nivel.id}/asientos`).toPromise();
             return { ...nivel, asientos };
           })
         );
