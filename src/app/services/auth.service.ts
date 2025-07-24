@@ -5,7 +5,8 @@ import { BehaviorSubject, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/auth';
+  // private apiUrl = 'http://localhost:3000/api/auth';
+  private apiUrl = 'https://proyecto-backendsw-2025-production.up.railway.app/api/auth';
   private tokenKey = 'auth-token';
 
   isLoggedIn$ = new BehaviorSubject<boolean>(this.hasToken());

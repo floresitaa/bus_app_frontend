@@ -13,7 +13,7 @@ export interface Trip {
 
 @Injectable({ providedIn: 'root' })
 export class TripService {
-  private baseUrl = 'http://localhost:3000/api/viajes/';
+  private baseUrl = 'https://proyecto-backendsw-2025-production.up.railway.app/api/viajes/';
 
   constructor(private http: HttpClient) {}
 
@@ -26,10 +26,10 @@ export class TripService {
   }
 
   generarAsientos(viajeId: string) {
-  return this.http.post(`http://localhost:3000/api/asiento-viaje/generar/${viajeId}`, {});
+  return this.http.post(`https://proyecto-backendsw-2025-production.up.railway.app/api/asiento-viaje/generar/${viajeId}`, {});
 }
 analizarViaje(viajeId: string) {
-  return this.http.post<any>('http://localhost:3000/api/analizar', {
+  return this.http.post<any>('https://proyecto-backendsw-2025-production.up.railway.app/api/analizar', {
     viaje_id: viajeId
   });
 }

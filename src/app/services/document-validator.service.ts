@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class DocumentValidatorService {
-  private apiUrl = 'http://localhost:3000/api/validar-docs/validar';
+  private apiUrl = 'https://proyecto-backendsw-2025-production.up.railway.app/api/validar-docs/validar';
 
   constructor(private http: HttpClient) {}
 
